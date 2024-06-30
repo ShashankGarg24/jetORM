@@ -7,15 +7,22 @@ import java.util.logging.Logger;
 
 public class DatabaseConnectionManager {
 
-    private static volatile Connection connectionInstance;
     private static final DbLogger logger = DbLogger.getInstance();
+    private static volatile Connection connectionInstance;
+    private static PropertyLoader propertyLoader;
 
-    public static Connection getConnectionInstance(String driverName, String jdbcUrl, String userName, String password) {
+    private DatabaseConnectionManager() throws SQLException, ClassNotFoundException {
+        propertyLoader = new PropertyLoader(System.getProperty("user.dir")+"\\src\\database.properties");
+        connectionInstance = getDatabaseConnection();
+    }
+
+
+    public static Connection getConnectionInstance() {
         try{
             if(connectionInstance == null) {
                 synchronized (DatabaseConnectionManager.class) {
                     if(connectionInstance == null) {
-                        connectionInstance = getDatabaseConnection(driverName, jdbcUrl, userName, password);
+                        new DatabaseConnectionManager();
                     }
                 }
             }
@@ -27,9 +34,12 @@ public class DatabaseConnectionManager {
 
 
 
-    private static Connection getDatabaseConnection(String driverName, String jdbcUrl, String userName, String password) throws ClassNotFoundException, SQLException {
-        Class.forName(driverName);
-        Connection connection = DriverManager.getConnection(jdbcUrl, userName, password);
+    private static Connection getDatabaseConnection() throws ClassNotFoundException, SQLException {
+        Class.forName(propertyLoader.get("database.driver.name"));
+        Connection connection = DriverManager.getConnection(
+                propertyLoader.get("database.host"),
+                propertyLoader.get("database.username"),
+                propertyLoader.get("database.password"));
         logger.info("Database connected");
         return connection;
     }

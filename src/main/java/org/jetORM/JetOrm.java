@@ -10,12 +10,7 @@ import java.util.Properties;
 public class JetOrm {
 
     public void configure(String path) {
-        PropertyLoader propertyLoader = new PropertyLoader(System.getProperty("user.dir")+"\\src\\database.properties");
-        Connection connection = DatabaseConnectionManager.getConnectionInstance(
-                propertyLoader.get("database.driver.name"),
-                propertyLoader.get("database.host"),
-                propertyLoader.get("database.username"),
-                propertyLoader.get("database.password"));
+        Connection connection = DatabaseConnectionManager.getConnectionInstance();
         new TableGenerator(connection, path);
     }
 
@@ -23,5 +18,4 @@ public class JetOrm {
 
     }
 
-    public
 }
