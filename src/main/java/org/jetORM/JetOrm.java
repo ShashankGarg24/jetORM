@@ -1,14 +1,13 @@
 package org.jetORM;
 
-import org.jetORM.config.DatabaseConnectionManager;
-import org.jetORM.config.PropertyLoader;
 import org.jetORM.exceptions.ClassMismatchException;
+import org.jetORM.exceptions.PrimaryKeyNotPresentException;
+import org.jetORM.operations.Reader;
 import org.jetORM.operations.Writer;
 import org.jetORM.schema.TableGenerator;
 
-import java.sql.Connection;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
-import java.util.Properties;
 
 public class JetOrm {
 
@@ -21,6 +20,10 @@ public class JetOrm {
             throw new ClassMismatchException("Given class doesn't matches the object");
         }
         Writer.write(clazz, object);
+    }
+
+    public Object getById(Class<?> clazz, Object id) throws PrimaryKeyNotPresentException, IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
+        return Reader.read(clazz, id);
     }
 
 }

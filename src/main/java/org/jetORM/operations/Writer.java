@@ -1,17 +1,20 @@
 package org.jetORM.operations;
 
-import org.jetORM.utils.Executer;
+import org.jetORM.config.DbLogger;
+import org.jetORM.utils.TableUtility;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
 
 public class Writer {
 
+    private static final DbLogger logger = DbLogger.getInstance();
+
     public static void write(Class<?> clazz, Object object) throws SQLException, IllegalAccessException {
         String insertQuery = buildQuery(clazz, object);
-        System.out.printf(insertQuery);
-        Executer.execute(insertQuery);
-        System.out.printf("Object Saved");
+        logger.info(insertQuery);
+        TableUtility.executeInsert(insertQuery);
+        logger.info("Object Saved Successfully");
     }
 
     private static String buildQuery(Class<?> clazz, Object object) throws IllegalAccessException {

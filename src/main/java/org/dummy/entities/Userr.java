@@ -12,9 +12,20 @@ public class Userr {
     private String userName;
     private String userEmail;
 
+    public Userr(){}
+
     public Userr(Long userId, String userName, String userEmail) {
         this.userId = userId;
         this.userName = userName;
         this.userEmail = userEmail;
+    }
+
+    @Override
+    public String toString() {
+        return "Userr{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                '}';
     }
 }
