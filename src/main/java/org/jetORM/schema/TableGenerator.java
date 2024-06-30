@@ -5,6 +5,7 @@ import org.jetORM.annotations.Id;
 import org.jetORM.config.DbLogger;
 import org.jetORM.exceptions.PrimaryKeyNotPresentException;
 import org.jetORM.exceptions.UnsupportedDataTypeException;
+import org.jetORM.utils.Executer;
 import org.reflections.Reflections;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -16,10 +17,8 @@ public class TableGenerator {
 
     private static final DbLogger logger = DbLogger.getInstance();
     private final Reflections reflections;
-    private final Connection connection;
 
-    public TableGenerator(Connection connection, String path){
-        this.connection = connection;
+    public TableGenerator(String path){
         reflections = new Reflections(path);
         generateDatabaseTablesFromClasses();
     }
@@ -31,7 +30,7 @@ public class TableGenerator {
                 logger.info("Class name -> " + entity);
                 String createTableQuery = generateTableQuery(entity);
                 logger.info(createTableQuery);
-                executeQuery(createTableQuery);
+                Executer.execute(createTableQuery);
             } catch (PrimaryKeyNotPresentException | UnsupportedDataTypeException | SQLException e){
                 logger.error("Failed to create table for: " + e.getMessage());
             }
@@ -43,11 +42,6 @@ public class TableGenerator {
         return reflections.getTypesAnnotatedWith(Entity.class);
     }
 
-    private void executeQuery(String createTableQuery) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(createTableQuery)) {
-            preparedStatement.execute();
-        }
-    }
 
     private String generateTableQuery(Class<?> entity) throws PrimaryKeyNotPresentException, UnsupportedDataTypeException {
 

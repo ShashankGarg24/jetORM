@@ -11,4 +11,10 @@ public class Userr {
     private Long userId;
     private String userName;
     private String userEmail;
+
+    public Userr(Long userId, String userName, String userEmail) {
+        this.userId = userId;
+        this.userName = userName;
+        this.userEmail = userEmail;
+    }
 }
