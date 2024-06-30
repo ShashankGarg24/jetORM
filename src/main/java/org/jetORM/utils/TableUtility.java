@@ -33,10 +33,10 @@ public class TableUtility {
         }
     }
 
-    public static int executeDelete(String query, Class<?> clazz, Object id) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public static void executeDelete(String query, Object id) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setPreparedStatementParameter(preparedStatement, id, 1);
-            return preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
         }
     }
 
@@ -57,6 +57,10 @@ public class TableUtility {
             }
         }
         return null;
+    }
+
+    public static boolean isFieldNull(Field field){
+        return field == null;
     }
 
     public static <T> T castResultToClassObject(ResultSet rs, Class<?> clazz) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException, SQLException {

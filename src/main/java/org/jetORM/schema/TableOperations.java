@@ -27,13 +27,13 @@ public class TableOperations {
             String updateQuery = buildUpdateQuery(clazz, object, values);
             logger.info(updateQuery);
             TableUtility.executeUpdate(updateQuery, values);
-            logger.info("Object Updated Successfully");
+            logger.info("Record Updated Successfully");
             return;
         }
         String insertQuery = buildWriteQuery(clazz, object);
         logger.info(insertQuery);
         TableUtility.executeInsert(insertQuery);
-        logger.info("Object Saved Successfully");
+        logger.info("Record Saved Successfully");
     }
 
     public static void remove(Class<?> clazz, Object id) throws SQLException, PrimaryKeyNotPresentException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
@@ -43,7 +43,7 @@ public class TableOperations {
         }
         String removeQuery = buildRemoveQuery(clazz);
         logger.info(removeQuery);
-        TableUtility.executeDelete(removeQuery, clazz, id);
+        TableUtility.executeDelete(removeQuery, id);
         logger.info("Record Removed Successfully");
     }
 
@@ -97,7 +97,7 @@ public class TableOperations {
         query.append(clazz.getSimpleName().toLowerCase()).append(" WHERE ");
         Field primaryField = TableUtility.fetchPrimaryKeyForEntity(clazz);
 
-        if(primaryField == null){
+        if(TableUtility.isFieldNull(primaryField)){
             throw new PrimaryKeyNotPresentException("Unable to retrieve the object as no Primary key is present");
         }
         query.append(primaryField.getName()).append(" = ?;");
@@ -109,7 +109,7 @@ public class TableOperations {
         query.append(clazz.getSimpleName().toLowerCase()).append(" WHERE ");
         Field primaryField = TableUtility.fetchPrimaryKeyForEntity(clazz);
 
-        if(primaryField == null){
+        if(TableUtility.isFieldNull(primaryField)){
             throw new PrimaryKeyNotPresentException("Unable to retrieve the object as no Primary key is present");
         }
         query.append(primaryField.getName()).append(" = ?;");

@@ -65,7 +65,6 @@ public class TableGenerator {
     }
 
     private void appendQueryForFieldInTableQuery(Field field, StringBuilder tableQuery) throws UnsupportedDataTypeException {
-
         String sqlDataType = TableUtility.mapJavaDataTypeToSql(field.getType().getSimpleName());
         String fieldQuery = String.format("%s %s,", field.getName(), sqlDataType);
         tableQuery.append(fieldQuery);
