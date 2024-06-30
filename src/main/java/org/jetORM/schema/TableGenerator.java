@@ -33,8 +33,8 @@ public class TableGenerator {
             } catch (PrimaryKeyNotPresentException | UnsupportedDataTypeException | SQLException e){
                 logger.error("Failed to create table for: " + e.getMessage());
             }
-            logger.info("Tables created successfully");
         }
+        logger.info("Tables created successfully");
     }
 
     private Set<Class<?>> fetchClasses() {
