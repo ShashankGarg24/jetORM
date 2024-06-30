@@ -14,15 +14,17 @@ import java.util.Set;
 
 public class TableGenerator {
 
-    private static final Reflections reflections = new Reflections("org.jetORM");
     private static final DbLogger logger = DbLogger.getInstance();
+    private final Reflections reflections;
     private final Connection connection;
 
-    public TableGenerator(Connection connection){
+    public TableGenerator(Connection connection, String path){
         this.connection = connection;
+        reflections = new Reflections(path);
+        generateDatabaseTablesFromClasses();
     }
 
-    public void generateDatabaseTablesFromClasses(){
+    private void generateDatabaseTablesFromClasses(){
         Set<Class<?>> entities = fetchClasses();
         for(Class<?> entity : entities){
             try {

@@ -1,9 +1,7 @@
-package org.jetORM.entities;
+package org.dummy.entities;
 
 import org.jetORM.annotations.Entity;
 import org.jetORM.annotations.Id;
-
-import java.math.BigDecimal;
 
 @Entity
 public class Demo {

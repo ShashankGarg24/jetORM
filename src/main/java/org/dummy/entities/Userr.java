@@ -1,5 +1,6 @@
-package org.jetORM.entities;
+package org.dummy.entities;
 
+import org.jetORM.annotations.Column;
 import org.jetORM.annotations.Entity;
 import org.jetORM.annotations.Id;
 
