@@ -10,5 +10,4 @@ public class Demo {
 
     @Id
     private int id;
-    private BigDecimal bigDecimal;
 }
