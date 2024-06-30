@@ -22,16 +22,21 @@ public class TableUtility {
     }
 
     public static <T> T executeRead(String query, Class<?> clazz, Object id) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
-        T object = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             setPreparedStatementParameter(preparedStatement, id);
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
-                object = castResultToClassObject(rs, clazz);
+                return TableUtility.castResultToClassObject(rs, clazz);
             }
-            
+            return null;
         }
-        return object;
+    }
+
+    public static int executeUpdate(String query, Class<?> clazz, Object id) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            setPreparedStatementParameter(preparedStatement, id);
+            return preparedStatement.executeUpdate();
+        }
     }
 
     public static Field fetchPrimaryKeyForEntity(Class<?> entity) {

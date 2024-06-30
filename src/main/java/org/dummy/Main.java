@@ -16,5 +16,6 @@ public class Main {
         Userr userr = new Userr(1l, "Shrasti", "sg@gmail.com");
 //        jetOrm.save(Userr.class, userr);
         System.out.printf(jetOrm.getById(Userr.class, 1l).toString());
+        jetOrm.deleteById(Userr.class, 1l);
     }
 }

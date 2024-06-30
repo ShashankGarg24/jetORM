@@ -2,9 +2,8 @@ package org.jetORM;
 
 import org.jetORM.exceptions.ClassMismatchException;
 import org.jetORM.exceptions.PrimaryKeyNotPresentException;
-import org.jetORM.operations.Reader;
-import org.jetORM.operations.Writer;
 import org.jetORM.schema.TableGenerator;
+import org.jetORM.schema.TableOperations;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
@@ -19,11 +18,15 @@ public class JetOrm {
         if(!clazz.isInstance(object)){
             throw new ClassMismatchException("Given class doesn't matches the object");
         }
-        Writer.write(clazz, object);
+        TableOperations.write(clazz, object);
     }
 
     public Object getById(Class<?> clazz, Object id) throws PrimaryKeyNotPresentException, IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
-        return Reader.read(clazz, id);
+        return TableOperations.read(clazz, id);
+    }
+
+    public void deleteById(Class<?> clazz, Object id) throws PrimaryKeyNotPresentException, IllegalAccessException, InvocationTargetException, SQLException, InstantiationException, NoSuchMethodException {
+        TableOperations.remove(clazz, id);
     }
 
 }
