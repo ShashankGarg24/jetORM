@@ -1,13 +1,14 @@
 package org.jetORM.schema;
 
+import org.jetORM.annotations.Id;
 import org.jetORM.config.DbLogger;
 import org.jetORM.exceptions.PrimaryKeyNotPresentException;
 import org.jetORM.utils.TableUtility;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class TableOperations {
 
@@ -19,7 +20,16 @@ public class TableOperations {
         return TableUtility.executeRead(readQuery, clazz, id);
     }
 
-    public static void write(Class<?> clazz, Object object) throws SQLException, IllegalAccessException {
+    public static void write(Class<?> clazz, Object object) throws SQLException, IllegalAccessException, NoSuchMethodException, PrimaryKeyNotPresentException, InstantiationException, InvocationTargetException {
+        Field primaryField = TableUtility.fetchPrimaryKeyForEntity(clazz);
+        if(objectPresent(clazz, primaryField.get(object))){
+            ArrayList<Object> values = new ArrayList<>();
+            String updateQuery = buildUpdateQuery(clazz, object, values);
+            logger.info(updateQuery);
+            TableUtility.executeUpdate(updateQuery, values);
+            logger.info("Object Updated Successfully");
+            return;
+        }
         String insertQuery = buildWriteQuery(clazz, object);
         logger.info(insertQuery);
         TableUtility.executeInsert(insertQuery);
@@ -33,7 +43,7 @@ public class TableOperations {
         }
         String removeQuery = buildRemoveQuery(clazz);
         logger.info(removeQuery);
-        TableUtility.executeUpdate(removeQuery, clazz, id);
+        TableUtility.executeDelete(removeQuery, clazz, id);
         logger.info("Record Removed Successfully");
     }
 
@@ -59,6 +69,26 @@ public class TableOperations {
         fieldValues.setLength(fieldValues.length() - 1);
 
         query.append(fieldNames).append(") VALUES (").append(fieldValues).append(");");
+        return query.toString();
+    }
+
+
+    private static String buildUpdateQuery(Class<?> clazz, Object obj, ArrayList<Object> values) throws IllegalAccessException {
+        StringBuilder query = new StringBuilder("UPDATE ");
+        query.append(clazz.getSimpleName().toLowerCase()).append(" SET");
+        Field[] fields = clazz.getDeclaredFields();
+        Field primaryField = TableUtility.fetchPrimaryKeyForEntity(clazz);
+
+        for(Field field : fields){
+            field.setAccessible(true);
+            if(!field.isAnnotationPresent(Id.class)){
+                query.append(" ").append(field.getName()).append("=?,");
+                values.add(field.get(obj));
+            }
+        }
+        values.add(primaryField.get(obj));
+        query.setLength(query.length()-1);
+        query.append(" WHERE ").append(primaryField.getName()).append("=?;");
         return query.toString();
     }
 

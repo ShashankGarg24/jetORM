@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class TableUtility {
 
@@ -23,7 +24,7 @@ public class TableUtility {
 
     public static <T> T executeRead(String query, Class<?> clazz, Object id) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            setPreparedStatementParameter(preparedStatement, id);
+            setPreparedStatementParameter(preparedStatement, id, 1);
             ResultSet rs = preparedStatement.executeQuery();
             if(rs.next()){
                 return TableUtility.castResultToClassObject(rs, clazz);
@@ -32,10 +33,19 @@ public class TableUtility {
         }
     }
 
-    public static int executeUpdate(String query, Class<?> clazz, Object id) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public static int executeDelete(String query, Class<?> clazz, Object id) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            setPreparedStatementParameter(preparedStatement, id);
+            setPreparedStatementParameter(preparedStatement, id, 1);
             return preparedStatement.executeUpdate();
+        }
+    }
+
+    public static void executeUpdate(String query, ArrayList<Object> values) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            for (int i = 1; i <= values.size(); i++) {
+                setPreparedStatementParameter(preparedStatement, values.get(i - 1), i);
+            }
+            preparedStatement.executeUpdate();
         }
     }
 
@@ -62,19 +72,19 @@ public class TableUtility {
         return object;
     }
 
-    private static void setPreparedStatementParameter(PreparedStatement pstmt, Object parameter) throws SQLException {
+    private static void setPreparedStatementParameter(PreparedStatement pstmt, Object parameter, int index) throws SQLException {
         if (parameter instanceof Integer) {
-            pstmt.setInt(1, (Integer) parameter);
+            pstmt.setInt(index, (Integer) parameter);
         } else if (parameter instanceof Long) {
-            pstmt.setLong(1, (Long) parameter);
+            pstmt.setLong(index, (Long) parameter);
         } else if (parameter instanceof String) {
-            pstmt.setString(1, (String) parameter);
+            pstmt.setString(index, (String) parameter);
         } else if (parameter instanceof Double) {
-            pstmt.setDouble(1, (Double) parameter);
+            pstmt.setDouble(index, (Double) parameter);
         } else if (parameter instanceof Float) {
-            pstmt.setFloat(1, (Float) parameter);
+            pstmt.setFloat(index, (Float) parameter);
         } else if (parameter instanceof Boolean) {
-            pstmt.setBoolean(1, (Boolean) parameter);
+            pstmt.setBoolean(index, (Boolean) parameter);
         } else {
             throw new SQLException("Unsupported parameter type: " + parameter.getClass().getName());
         }
@@ -108,4 +118,5 @@ public class TableUtility {
                 throw new UnsupportedDataTypeException("Datatype " + type + " not supported");
         }
     }
+
 }

@@ -14,7 +14,7 @@ public class JetOrm {
         new TableGenerator(path);
     }
 
-    public void save(Class<?> clazz, Object object) throws ClassMismatchException, SQLException, IllegalAccessException {
+    public void save(Class<?> clazz, Object object) throws ClassMismatchException, SQLException, IllegalAccessException, NoSuchMethodException, PrimaryKeyNotPresentException, InstantiationException, InvocationTargetException {
         if(!clazz.isInstance(object)){
             throw new ClassMismatchException("Given class doesn't matches the object");
         }

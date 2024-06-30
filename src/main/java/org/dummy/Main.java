@@ -13,9 +13,9 @@ public class Main {
     public static void main(String[] args) throws IllegalAccessException, ClassMismatchException, SQLException, PrimaryKeyNotPresentException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         JetOrm jetOrm = new JetOrm();
         jetOrm.configure("org.dummy");
-        Userr userr = new Userr(1l, "Shrasti", "sg@gmail.com");
-//        jetOrm.save(Userr.class, userr);
+        Userr userr = new Userr(1l, "Shraasti", "sg@gmail.com");
+        jetOrm.save(Userr.class, userr);
         System.out.printf(jetOrm.getById(Userr.class, 1l).toString());
-        jetOrm.deleteById(Userr.class, 1l);
+//        jetOrm.deleteById(Userr.class, 1l);
     }
 }
