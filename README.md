@@ -1,4 +1,4 @@
-# JetOrm
+# JetORM
 
 JetOrm is a lightweight Object-Relational Mapping (ORM) framework inspired by Hibernate. It simplifies database interaction by automatically generating tables and handling CRUD operations using Java Reflection.
 
